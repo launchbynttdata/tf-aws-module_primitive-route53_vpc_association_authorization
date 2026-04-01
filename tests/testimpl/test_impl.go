@@ -4,6 +4,7 @@ import (
 	"context"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/service/route53"
@@ -68,20 +69,25 @@ func TestComposableComplete(t *testing.T, ctx types.TestContext) {
 
 	// Write operation: exercise the authorization by associating the VPC with
 	// the hosted zone, then disassociate to clean up.
-	t.Run("TestAssociateVPCUsingAuthorization", func(t *testing.T) {
-		region := route53types.VPCRegion(vpcRegion)
-		_, err := client.AssociateVPCWithHostedZone(context.Background(), &route53.AssociateVPCWithHostedZoneInput{
-			HostedZoneId: &zoneID,
-			VPC: &route53types.VPC{
-				VPCId:     &vpcID,
-				VPCRegion: region,
-			},
-			Comment: strPtr("Functional test: exercising VPC association authorization"),
-		})
-		require.NoError(t, err, "AssociateVPCWithHostedZone should succeed using the authorization")
+	// NOTE: We do not use a subtest here so that the deferred disassociate
+	// cleanup runs even if an assertion fails, preventing orphaned associations
+	// that would block terraform destroy.
+	region := route53types.VPCRegion(vpcRegion)
+	assocOut, err := client.AssociateVPCWithHostedZone(context.Background(), &route53.AssociateVPCWithHostedZoneInput{
+		HostedZoneId: &zoneID,
+		VPC: &route53types.VPC{
+			VPCId:     &vpcID,
+			VPCRegion: region,
+		},
+		Comment: strPtr("Functional test: exercising VPC association authorization"),
+	})
+	require.NoError(t, err, "AssociateVPCWithHostedZone should succeed using the authorization")
+	require.NotNil(t, assocOut.ChangeInfo, "AssociateVPCWithHostedZone should return change info")
+	require.NotNil(t, assocOut.ChangeInfo.Id, "Associate change should have an ID")
 
-		// Clean up: disassociate the VPC so Terraform destroy can remove the authorization
-		_, err = client.DisassociateVPCFromHostedZone(context.Background(), &route53.DisassociateVPCFromHostedZoneInput{
+	// Defer disassociate immediately so it runs even if subsequent assertions fail
+	defer func() {
+		disassocOut, disassocErr := client.DisassociateVPCFromHostedZone(context.Background(), &route53.DisassociateVPCFromHostedZoneInput{
 			HostedZoneId: &zoneID,
 			VPC: &route53types.VPC{
 				VPCId:     &vpcID,
@@ -89,8 +95,16 @@ func TestComposableComplete(t *testing.T, ctx types.TestContext) {
 			},
 			Comment: strPtr("Functional test: cleanup after exercising VPC association authorization"),
 		})
-		require.NoError(t, err, "DisassociateVPCFromHostedZone should succeed for cleanup")
-	})
+		if disassocErr != nil {
+			t.Errorf("DisassociateVPCFromHostedZone cleanup failed: %v", disassocErr)
+			return
+		}
+		if disassocOut.ChangeInfo != nil && disassocOut.ChangeInfo.Id != nil {
+			waitForRoute53ChangeInSync(t, client, *disassocOut.ChangeInfo.Id)
+		}
+	}()
+
+	waitForRoute53ChangeInSync(t, client, *assocOut.ChangeInfo.Id)
 }
 
 func TestComposableCompleteReadonly(t *testing.T, ctx types.TestContext) {
@@ -148,4 +162,20 @@ func TestComposableCompleteReadonly(t *testing.T, ctx types.TestContext) {
 
 func strPtr(s string) *string {
 	return &s
+}
+
+func waitForRoute53ChangeInSync(t *testing.T, client *route53.Client, changeID string) {
+	t.Helper()
+	ctx := context.Background()
+	deadline := time.Now().Add(5 * time.Minute)
+	for time.Now().Before(deadline) {
+		out, err := client.GetChange(ctx, &route53.GetChangeInput{Id: &changeID})
+		require.NoError(t, err, "GetChange should succeed while waiting for INSYNC")
+		require.NotNil(t, out.ChangeInfo, "GetChange should return change info")
+		if out.ChangeInfo.Status == route53types.ChangeStatusInsync {
+			return
+		}
+		time.Sleep(2 * time.Second)
+	}
+	require.Fail(t, "timed out waiting for Route53 change to reach INSYNC", "changeID=%s", changeID)
 }
