@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(curl -s -L \"https://registry.terraform.io/providers/-/aws/5.100.0/docs/resources/route53_vpc_association_authorization\")",
+      "WebFetch(domain:registry.terraform.io)",
+      "WebFetch(domain:github.com)",
+      "Bash(go mod:*)",
+      "Bash(go build:*)",
+      "Bash(terraform init:*)",
+      "Bash(terraform validate:*)",
+      "Bash(go vet:*)"
+    ]
+  }
+}
