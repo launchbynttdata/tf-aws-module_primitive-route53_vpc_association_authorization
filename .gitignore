@@ -61,3 +61,6 @@ azure_env.sh
 .vscode/
 
 local_code_review.md
+
+# Claude
+.claude/
