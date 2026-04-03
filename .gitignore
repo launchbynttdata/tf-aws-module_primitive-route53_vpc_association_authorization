@@ -64,3 +64,7 @@ local_code_review.md
 
 # Claude
 .claude/
+
+# Go build/test caches
+.gocache/
+.gomodcache/

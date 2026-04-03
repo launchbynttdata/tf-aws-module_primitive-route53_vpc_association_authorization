@@ -25,7 +25,7 @@ module "resource_names" {
   instance_resource       = var.instance_resource
   cloud_resource_type     = each.value.name
   maximum_length          = each.value.max_length
-  region                  = join("", split("-", data.aws_region.current.name))
+  region                  = join("", split("-", data.aws_region.current.id))
 }
 
 // VPC that owns the private hosted zone
