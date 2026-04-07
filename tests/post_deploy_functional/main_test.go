@@ -21,8 +21,9 @@ import (
 )
 
 const (
-	testConfigsExamplesFolderDefault = "../../examples"
-	infraTFVarFileNameDefault        = "test.tfvars"
+	testConfigsExamplesFolderDefault     = "../../examples"
+	testConfigsExamplesFolderMinProvider = "../../examples/min_provider"
+	infraTFVarFileNameDefault            = "test.tfvars"
 )
 
 func TestRoute53VPCAssociationAuthorizationComplete(t *testing.T) {
@@ -30,6 +31,17 @@ func TestRoute53VPCAssociationAuthorizationComplete(t *testing.T) {
 	ctx := types.CreateTestContextBuilder().
 		SetTestConfig(&testimpl.ThisTFModuleConfig{}).
 		SetTestConfigFolderName(testConfigsExamplesFolderDefault).
+		SetTestConfigFileName(infraTFVarFileNameDefault).
+		Build()
+
+	lib.RunSetupTestTeardown(t, *ctx, testimpl.TestComposableComplete)
+}
+
+func TestRoute53VPCAssociationAuthorizationCompleteMinProvider(t *testing.T) {
+
+	ctx := types.CreateTestContextBuilder().
+		SetTestConfig(&testimpl.ThisTFModuleConfig{}).
+		SetTestConfigFolderName(testConfigsExamplesFolderMinProvider).
 		SetTestConfigFileName(infraTFVarFileNameDefault).
 		Build()
 
