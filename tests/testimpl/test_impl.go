@@ -16,12 +16,12 @@ import (
 )
 
 func TestComposableComplete(t *testing.T, ctx types.TestContext) {
-	id := terraform.Output(t, ctx.TerratestTerraformOptions(), "id")
-	zoneID := terraform.Output(t, ctx.TerratestTerraformOptions(), "zone_id")
-	vpcID := terraform.Output(t, ctx.TerratestTerraformOptions(), "vpc_id")
-	vpcRegion := terraform.Output(t, ctx.TerratestTerraformOptions(), "vpc_region")
-	hostedZoneName := terraform.Output(t, ctx.TerratestTerraformOptions(), "hosted_zone_name")
-	zoneVpcID := terraform.Output(t, ctx.TerratestTerraformOptions(), "zone_vpc_id")
+	id := terraform.OutputContext(t, context.Background(), ctx.TerratestTerraformOptions(), "id")
+	zoneID := terraform.OutputContext(t, context.Background(), ctx.TerratestTerraformOptions(), "zone_id")
+	vpcID := terraform.OutputContext(t, context.Background(), ctx.TerratestTerraformOptions(), "vpc_id")
+	vpcRegion := terraform.OutputContext(t, context.Background(), ctx.TerratestTerraformOptions(), "vpc_region")
+	hostedZoneName := terraform.OutputContext(t, context.Background(), ctx.TerratestTerraformOptions(), "hosted_zone_name")
+	zoneVpcID := terraform.OutputContext(t, context.Background(), ctx.TerratestTerraformOptions(), "zone_vpc_id")
 
 	// Verify the ID format is zone_id:vpc_id
 	assert.Equal(t, zoneID+":"+vpcID, id, "ID should be in format zone_id:vpc_id")
@@ -108,12 +108,12 @@ func TestComposableComplete(t *testing.T, ctx types.TestContext) {
 }
 
 func TestComposableCompleteReadonly(t *testing.T, ctx types.TestContext) {
-	id := terraform.Output(t, ctx.TerratestTerraformOptions(), "id")
-	zoneID := terraform.Output(t, ctx.TerratestTerraformOptions(), "zone_id")
-	vpcID := terraform.Output(t, ctx.TerratestTerraformOptions(), "vpc_id")
-	vpcRegion := terraform.Output(t, ctx.TerratestTerraformOptions(), "vpc_region")
-	hostedZoneName := terraform.Output(t, ctx.TerratestTerraformOptions(), "hosted_zone_name")
-	zoneVpcID := terraform.Output(t, ctx.TerratestTerraformOptions(), "zone_vpc_id")
+	id := terraform.OutputContext(t, context.Background(), ctx.TerratestTerraformOptions(), "id")
+	zoneID := terraform.OutputContext(t, context.Background(), ctx.TerratestTerraformOptions(), "zone_id")
+	vpcID := terraform.OutputContext(t, context.Background(), ctx.TerratestTerraformOptions(), "vpc_id")
+	vpcRegion := terraform.OutputContext(t, context.Background(), ctx.TerratestTerraformOptions(), "vpc_region")
+	hostedZoneName := terraform.OutputContext(t, context.Background(), ctx.TerratestTerraformOptions(), "hosted_zone_name")
+	zoneVpcID := terraform.OutputContext(t, context.Background(), ctx.TerratestTerraformOptions(), "zone_vpc_id")
 
 	// Verify the ID format is zone_id:vpc_id
 	assert.Equal(t, zoneID+":"+vpcID, id, "ID should be in format zone_id:vpc_id")
