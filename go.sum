@@ -60,8 +60,8 @@ github.com/aws/aws-sdk-go-v2/service/lambda v1.102.0 h1:6DieWbDSZRl/3X9WBd1I2dX5
 github.com/aws/aws-sdk-go-v2/service/lambda v1.102.0/go.mod h1:TjkkzyKth5PG4AMJIif6MBfdZsa0FXl38wx8hLJm9iY=
 github.com/aws/aws-sdk-go-v2/service/rds v1.124.4 h1:cnAJO6Jt3JjkOFyCMJswcAYrcGG/xSjiM0XJ31+J40s=
 github.com/aws/aws-sdk-go-v2/service/rds v1.124.4/go.mod h1:NOafC1uoxZD59f/+au6BZN7s5zp/cFztIy61OFLBSo4=
-github.com/aws/aws-sdk-go-v2/service/route53 v1.70.10 h1:CSToEknPPik1neAIlinq7RTFG4XYAHqPkW7LwlbqGiU=
-github.com/aws/aws-sdk-go-v2/service/route53 v1.70.10/go.mod h1:ESN88d5omEDCHVFJ+jz01i3w8oYvGVj3lSCYhM6BoL8=
+github.com/aws/aws-sdk-go-v2/service/route53 v1.71.0 h1:z3rXSCR6cqg34XeZlzpYo1txK9EP/lAPh7NxhQSTF7g=
+github.com/aws/aws-sdk-go-v2/service/route53 v1.71.0/go.mod h1:ESN88d5omEDCHVFJ+jz01i3w8oYvGVj3lSCYhM6BoL8=
 github.com/aws/aws-sdk-go-v2/service/s3 v1.107.3 h1:IKoCZqfWfZzSBi16QFQ+QcbQ3LRQ7QgB1S5tDAyPBQQ=
 github.com/aws/aws-sdk-go-v2/service/s3 v1.107.3/go.mod h1:RBpRcXiM4s2pOInVs32GsBonnje+fiAj4mcrStRmlCA=
 github.com/aws/aws-sdk-go-v2/service/secretsmanager v1.44.7 h1:qanwwhOS4MEtv8b2R+XPvUpBQp1XaWHAPySCzplefLo=
